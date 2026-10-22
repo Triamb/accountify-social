@@ -1,0 +1,81 @@
+# Posts the scheduled reels (brand/schedule.json) to YouTube Shorts and Instagram through the
+# official APIs, from GitHub's cloud, so nothing runs on the founder's PC.
+# brand/posted.log is the record of what went out; every run commits it back, so nothing posts twice.
+name: post reels
+
+on:
+  schedule:
+    # Times are UTC. 12:05 = 17:35 IST (YouTube, ~2 h before), 14:05 = 19:35 IST (Instagram),
+    # 15:35 and 17:35 = catch-up if GitHub's cron ran late or a post failed.
+    - cron: "5 12,14 * * *"
+    - cron: "35 15,17 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: post-reels
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BRAND_DIR: /home/runner/.social-brands/accountify
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: astral-sh/setup-uv@v6
+      - name: Anything due?
+        id: due
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import datetime as dt, json, pathlib
+          now = dt.datetime.utcnow() + dt.timedelta(hours=5, minutes=30)
+          days = {(now - dt.timedelta(days=n)).strftime("%Y-%m-%d") for n in (0, 1)}
+          log = pathlib.Path("brand/posted.log").read_text(encoding="utf-8")
+          due = False
+          for e in json.loads(pathlib.Path("brand/schedule.json").read_text(encoding="utf-8")):
+              if e["date"] not in days: continue
+              slot = dt.datetime.strptime(f"{e['date']} {e['ig_time_ist']}", "%Y-%m-%d %H:%M")
+              for plat, lead in (("ig", 0), ("yt", 2)):
+                  key = f"{e['date']} {plat} {pathlib.Path(e['file']).name}"
+                  if now >= slot - dt.timedelta(hours=lead) and key not in log: due = True
+          print(f"due={'true' if due else 'false'}")
+          PY
+      - name: Install Firebase CLI
+        if: steps.due.outputs.due == 'true'
+        run: npm install -g firebase-tools@14 --silent
+      - name: Restore brand folder and secrets
+        if: steps.due.outputs.due == 'true'
+        env:
+          IG_TOKEN: ${{ secrets.IG_TOKEN }}
+          YT_TOKEN_JSON: ${{ secrets.YT_TOKEN_JSON }}
+          YT_CLIENT_SECRET_JSON: ${{ secrets.YT_CLIENT_SECRET_JSON }}
+          HOSTING_SA_JSON: ${{ secrets.HOSTING_SA_JSON }}
+        run: |
+          mkdir -p "$BRAND_DIR"
+          cp brand/brand.json brand/schedule.json brand/posted.log "$BRAND_DIR/"
+          printf '%s' "$IG_TOKEN" > "$BRAND_DIR/ig_token.txt"
+          printf '%s' "$YT_TOKEN_JSON" > "$BRAND_DIR/yt_token.json"
+          printf '%s' "$YT_CLIENT_SECRET_JSON" > "$BRAND_DIR/client_secret.json"
+          printf '%s' "$HOSTING_SA_JSON" > "$RUNNER_TEMP/hosting-sa.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/hosting-sa.json" >> "$GITHUB_ENV"
+      - name: Post what's due
+        if: steps.due.outputs.due == 'true'
+        env:
+          PYTHONIOENCODING: utf-8
+        run: python scripts/post_due.py --brand accountify --manifest schedule.json --catchup
+      - name: Save the posted log
+        if: always() && steps.due.outputs.due == 'true'
+        run: |
+          cp "$BRAND_DIR/posted.log" brand/posted.log
+          rm -f "$BRAND_DIR/ig_token.txt" "$BRAND_DIR/yt_token.json" "$BRAND_DIR/client_secret.json" "$RUNNER_TEMP/hosting-sa.json"
+          git config user.name "accountify-bot"
+          git config user.email "accountify.app@gmail.com"
+          git add brand/posted.log
+          git diff --cached --quiet || (git commit -m "posted: $(date -u +%F)" && git push)

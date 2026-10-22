@@ -1,0 +1,20 @@
+{
+  "name": "Accountify",
+  "ig_username": "accountify.app",
+  "yt_channel_id": "UCWMc-90d1NDRECjmm-BmalQ",
+  "yt_handle": "@accountify_app",
+  "hosting_project": "amazon-clone-chatbot-wsqi",
+  "link": "https://play.google.com/store/apps/details?id=com.accountify.accountability_app",
+  "tone": "Positive first: happy, Disney-storybook vibe; two friends building accountability together. Fear/loss angle only later. NEVER mention real-money stakes (India PROGA advertising ban). Hashtags (3-5 max): #gymaccountability #gymbuddy #winterarc #discipline #fitnessindia. Caption line 1 = keyword phrase; CTA = send-to-a-friend prompt.",
+  "house_styles": [
+    "Kaju & Pista papercraft series (primary)",
+    "papercraft storybook (accountify-story)",
+    "cinematic fight-night (accountify-streak)"
+  ],
+  "mascots": {
+    "official": "CUBES: Kaju = gold cube (#EFB100/#C98F00), the struggler; Pista = green cube (#1DC97A/#139A5C), the smug consistent friend. Buddy component in cast.tsx.",
+    "alternates": "People pair and cute Nut pair (Kaju/Pista components in cast.tsx) are approved for variety in individual reels; cubes stay the mascot/avatar.",
+    "cast_file": "remotion/src/shots/kaju-pista/cast.tsx",
+    "approved": "2026-09-30 via family vote sheet (Downloads/kp-vote-v3.png)"
+  }
+}

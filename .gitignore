@@ -1,0 +1,6 @@
+ig_token.txt
+yt_token.json
+client_secret.json
+*-sa.json
+firebase-debug.log
+__pycache__/
