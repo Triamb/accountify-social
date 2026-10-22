@@ -47,6 +47,21 @@ jobs:
                   if now >= slot - dt.timedelta(hours=lead) and key not in log: due = True
           print(f"due={'true' if due else 'false'}")
           PY
+      - name: Manual run, check the logins work (posts nothing)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          IG_TOKEN: ${{ secrets.IG_TOKEN }}
+          YT_TOKEN_JSON: ${{ secrets.YT_TOKEN_JSON }}
+          YT_CLIENT_SECRET_JSON: ${{ secrets.YT_CLIENT_SECRET_JSON }}
+          PYTHONIOENCODING: utf-8
+        run: |
+          mkdir -p "$BRAND_DIR" && cp brand/brand.json "$BRAND_DIR/"
+          printf '%s' "$IG_TOKEN" > "$BRAND_DIR/ig_token.txt"
+          printf '%s' "$YT_TOKEN_JSON" > "$BRAND_DIR/yt_token.json"
+          printf '%s' "$YT_CLIENT_SECRET_JSON" > "$BRAND_DIR/client_secret.json"
+          python scripts/ig.py --brand accountify whoami | grep -E '"username"'
+          uv run -q --with google-api-python-client --with google-auth-oauthlib python scripts/yt.py --brand accountify stats | head -2
+          rm -f "$BRAND_DIR/ig_token.txt" "$BRAND_DIR/yt_token.json" "$BRAND_DIR/client_secret.json"
       - name: Install Firebase CLI
         if: steps.due.outputs.due == 'true'
         run: npm install -g firebase-tools@14 --silent
