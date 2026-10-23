@@ -5,10 +5,10 @@ name: post reels
 
 on:
   schedule:
-    # Times are UTC. 12:05 = 17:35 IST (YouTube, ~2 h before), 14:05 = 19:35 IST (Instagram),
-    # 15:35 and 17:35 = catch-up if GitHub's cron ran late or a post failed.
-    - cron: "5 12,14 * * *"
-    - cron: "35 15,17 * * *"
+    # Times are UTC. Every 30 min from 17:37 to 00:07 IST: GitHub's scheduler silently drops runs when
+    # it's busy (23 Oct: 3 of 4 slots skipped), so many cheap slots beat a few exact ones. A run with
+    # nothing due takes ~12 s; posted.log stops anything posting twice.
+    - cron: "7,37 12-18 * * *"
   workflow_dispatch:
 
 concurrency:
