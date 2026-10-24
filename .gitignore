@@ -1,6 +1,8 @@
+*-sa.json
+.firebase/
+__pycache__/
+client_secret.json
+firebase-debug.log
+functions/node_modules/
 ig_token.txt
 yt_token.json
-client_secret.json
-*-sa.json
-firebase-debug.log
-__pycache__/

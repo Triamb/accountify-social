@@ -1,0 +1,5 @@
+{
+  "functions": [
+    { "source": "functions", "codebase": "social", "runtime": "nodejs22", "ignore": ["node_modules"] }
+  ]
+}

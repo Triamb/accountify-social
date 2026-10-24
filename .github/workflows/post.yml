@@ -5,9 +5,9 @@ name: post reels
 
 on:
   schedule:
-    # Times are UTC. Every 30 min from 17:37 to 00:07 IST: GitHub's scheduler silently drops runs when
-    # it's busy (23 Oct: 3 of 4 slots skipped), so many cheap slots beat a few exact ones. A run with
-    # nothing due takes ~12 s; posted.log stops anything posting twice.
+    # Backup only: GitHub's scheduler silently drops runs (23-24 Oct: whole days missed). The real trigger
+    # is Cloud Scheduler (functions/index.js) dispatching this workflow every 30 min, 17:37-00:07 IST.
+    # A run with nothing due takes ~12 s; posted.log stops anything posting twice.
     - cron: "7,37 12-18 * * *"
   workflow_dispatch:
 
@@ -26,6 +26,8 @@ jobs:
       BRAND_DIR: /home/runner/.social-brands/accountify
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main  # latest posted.log, not the trigger-time commit, so a queued run can't post twice
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
