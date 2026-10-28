@@ -39,7 +39,7 @@ if a.catchup:  # re-invoke this script once per overdue (entry, platform)
         if day not in days:
             continue
         slot_at = dt.datetime.strptime(f"{day} {e['ig_time_ist']}", "%Y-%m-%d %H:%M")
-        plats = ["ig"] + ([] if e.get("images") else ["yt"])
+        plats = ["ig"] + ([] if e.get("images") or e.get("ig_only") else ["yt"])
         for plat in plats:
             due = slot_at - (dt.timedelta(hours=2) if plat == "yt" else dt.timedelta(0))
             key = f"{day} {plat} {Path(e.get('file') or e['images'][0]).name}"

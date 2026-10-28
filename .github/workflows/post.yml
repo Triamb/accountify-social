@@ -44,7 +44,7 @@ jobs:
           for e in json.loads(pathlib.Path("brand/schedule.json").read_text(encoding="utf-8")):
               if e["date"] not in days: continue
               slot = dt.datetime.strptime(f"{e['date']} {e['ig_time_ist']}", "%Y-%m-%d %H:%M")
-              for plat, lead in (("ig", 0), ("yt", 2)):
+              for plat, lead in (("ig", 0),) + (() if e.get("ig_only") else (("yt", 2),)):
                   key = f"{e['date']} {plat} {pathlib.Path(e['file']).name}"
                   if now >= slot - dt.timedelta(hours=lead) and key not in log: due = True
           print(f"due={'true' if due else 'false'}")
