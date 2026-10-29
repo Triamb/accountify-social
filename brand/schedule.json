@@ -44,7 +44,6 @@
     "date": "2026-10-31",
     "ig_time_ist": "13:00",
     "slot": "t1",
-    "trial": true,
     "ig_only": true,
     "file": "reels/leetcode-rpg.mp4",
     "caption": "Day 14 of LeetCode and a wild MEDIUM appeared 🎮\n\n\"Do it tomorrow\" stops being an option when a friend checks your accepted submission every night.\n\nTag your placement prep partner.\n\n#leetcode #placementprep #dsa #codinglife #accountabilitypartner\n\nMusic: ende.app"
@@ -53,9 +52,24 @@
     "date": "2026-10-31",
     "ig_time_ist": "17:00",
     "slot": "t2",
-    "trial": true,
     "ig_only": true,
     "file": "reels/case-file-monday.mp4",
     "caption": "Case file: the \"from Monday\" friend 📁\n\nBought 12 books, read 0. Said \"starting Monday\" 9 Mondays in a row. Left \"proof?\" on read at 11:42 PM.\n\nSend this to the suspect.\n\n#accountabilitypartner #readingchallenge #studymotivation #habits\n\nMusic: ende.app"
+  },
+  {
+    "date": "2026-10-31",
+    "ig_time_ist": "19:30",
+    "slot": "t3",
+    "ig_only": true,
+    "file": "reels/proof-showdown.mp4",
+    "caption": "Who posts proof first? 🏁\n\nRound 2 is where every friendship gets tested.\n\nTag the friend who'd lose round 2.\n\n#accountabilitypartner #studymotivation #habits #bestfriends\n\nMusic: ende.app"
+  },
+  {
+    "date": "2026-10-31",
+    "ig_time_ist": "21:30",
+    "slot": "t4",
+    "ig_only": true,
+    "file": "reels/deadline-1058.mp4",
+    "caption": "10:59 PM and your friend already posted proof ⏰\n\nYou had all day. The page count says 3 of 20.\n\nSend this to the friend who always posts at 10:59.\n\n#studymotivation #readingchallenge #accountabilitypartner #habits\n\nMusic: ende.app"
   }
 ]
