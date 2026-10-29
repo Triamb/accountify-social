@@ -6,9 +6,9 @@ name: post reels
 on:
   schedule:
     # Backup only: GitHub's scheduler silently drops runs (23-24 Oct: whole days missed). The real trigger
-    # is Cloud Scheduler (functions/index.js) dispatching this workflow every 30 min, 17:37-00:07 IST.
+    # is Cloud Scheduler (functions/index.js) dispatching this workflow every 30 min, 11:07-00:07 IST.
     # A run with nothing due takes ~12 s; posted.log stops anything posting twice.
-    - cron: "7,37 12-18 * * *"
+    - cron: "7,37 6-18 * * *"
   workflow_dispatch:
 
 concurrency:

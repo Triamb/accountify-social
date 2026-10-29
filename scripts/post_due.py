@@ -75,7 +75,7 @@ except FileExistsError:
 if a.platform == "ig" and e.get("images"):
     cmd = [sys.executable, str(HERE / "ig.py"), "--brand", a.brand, "carousel", *e["images"], "--caption", e["caption"]]
 elif a.platform == "ig":
-    cmd = [sys.executable, str(HERE / "ig.py"), "--brand", a.brand, "post", e["file"], "--caption", e["caption"]]
+    cmd = [sys.executable, str(HERE / "ig.py"), "--brand", a.brand, "post", e["file"], "--caption", e["caption"], *(["--trial"] if e.get("trial") else [])]
 else:
     import shutil  # scheduled tasks may have a thin PATH; fall back to uv's default install
     uv = shutil.which("uv") or str(Path.home() / ".local" / "bin" / "uv.exe")

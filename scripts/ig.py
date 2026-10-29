@@ -29,6 +29,7 @@ sub.add_parser("whoami")
 po = sub.add_parser("post")
 po.add_argument("file")
 po.add_argument("--caption", default="")
+po.add_argument("--trial", action="store_true", help="Trial Reel: non-followers only; IG shares it to followers if it performs")
 ca = sub.add_parser("carousel")  # 2-10 JPEGs (4:5, 1080x1350 recommended)
 ca.add_argument("files", nargs="+")
 ca.add_argument("--caption", default="")
@@ -82,7 +83,7 @@ def host(file, extra=()):
     return channel, (base + "/reel.mp4" if file else [f"{base}/s{i}.jpg" for i in range(len(extra))])
 
 
-def post(file, caption):
+def post(file, caption, trial=False):
     who = me()
     if who.get("username") != BRAND["ig_username"]:
         sys.exit(f"REFUSING: token belongs to @{who.get('username')}, not @{BRAND['ig_username']}")
@@ -90,7 +91,9 @@ def post(file, caption):
     channel, video_url = host(file)
     try:
         cid = call("POST", f"https://graph.instagram.com/{V}/{ig}/media",
-                   {"media_type": "REELS", "video_url": video_url, "caption": caption, "share_to_feed": "true"})["id"]
+                   {"media_type": "REELS", "video_url": video_url, "caption": caption,
+                    **({"trial_params": json.dumps({"graduation_strategy": "SS_PERFORMANCE"})} if trial
+                       else {"share_to_feed": "true"})})["id"]
         for _ in range(60):  # IG fetches + transcodes before it can publish
             s = call("GET", f"https://graph.instagram.com/{V}/{cid}", {"fields": "status_code,status"})
             if s.get("status_code") == "FINISHED":
@@ -136,7 +139,7 @@ def carousel(files, caption):
 if args.cmd == "whoami":
     print(json.dumps(me(), indent=2))
 elif args.cmd == "post":
-    post(args.file, args.caption)
+    post(args.file, args.caption, args.trial)
 elif args.cmd == "carousel":
     carousel(args.files, args.caption)
 elif args.cmd == "comments":
